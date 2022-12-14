@@ -1,0 +1,73 @@
+{% extends 'movie_hub/base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .carousel-background {
+        height: 60vh;
+        background-size: cover;
+        background-position-y: -50%;
+        filter: blur(8px);
+        -webkit-filter: blur(8px);
+    }
+
+    .carousel-item>img {
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 12%;
+    }
+</style>
+<div class="container">
+    <!-- Featured Movies Carousel -->
+    <div id="moviesCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            {% for _ in featured_movies %}
+            <button type="button" data-bs-target="#moviesCarousel" data-bs-slide-to="{{forloop.counter0}}"
+                aria-label="Movie {{forloop.counter}}" {% if forloop.first %} class="active" aria-current="true"
+                {%endif%}>
+            </button>
+            {% endfor %}
+        </div>
+
+        <div class="carousel-inner">
+            {% for movie in featured_movies %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}" data-bs-interval="100000">
+                <div class="carousel-background d-block w-100"
+                    style="background-image:url('{% static movie.posterImage %}')">
+                </div>
+                <img src="{% static movie.posterImage %}" alt="{{movie.title}}">
+            </div>
+            {% endfor %}
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#moviesCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon shadow-lg bg-dark" style="--bs-bg-opacity: 0.6"
+                aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+
+        <button class="carousel-control-next" type="button" data-bs-target="#moviesCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon shadow-lg bg-dark" style="--bs-bg-opacity: 0.6"
+                aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+    <!-- Movies -->
+    <div class="row gx-4">
+        {% for movie in movies %}
+        <div class="col-lg-2 col-md-3">
+            <div class="card">
+                <img src="{% static movie.posterImage %}" class="card-img-top" alt="{{movie.title}}">
+                <div class="card-body">
+                    <h5 class="card-title">{{movie.title}}</h5>
+                    <p class="card-text">{{movie.summary}}</p>
+                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

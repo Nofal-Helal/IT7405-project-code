@@ -4,3 +4,7 @@ venv/
 # Cached compiled / optimized files
 __pycache__/
 *.py[cod]
+
+# Non WebP images
+*.jpg
+*.png

@@ -53,4 +53,5 @@ class Movie(Model):
     genres = JSONField(default=[])
     imdb = EmbeddedField(IMDB, blank=True)
     comments = ArrayField(Comment, blank=True, default=[])
+    dateAdded = DateTimeField(auto_now_add=True)
 
