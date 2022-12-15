@@ -34,7 +34,7 @@ class Comment(Model):
 
 class Duration(Model):
     hours = IntegerField()
-    minutes = IntegerField
+    minutes = IntegerField()
 
     class Meta:
         abstract = True
@@ -51,6 +51,14 @@ class Movie(Model):
     posterImage = models.URLField(blank=True)
     summary = TextField(blank=True)
     genres = JSONField(default=[])
+    parentsGuide = CharField(max_length=5,
+                             choices=[('G', 'G - General Audience'),
+                                      ('PG',
+                                       'PG - Parental Guidance Suggested'),
+                                      ('PG-13',
+                                       'PG-13 - Parents Strongly Cautioned'),
+                                      ('R', 'R - Restricted'),
+                                      ('NC-17', 'NC-17 - Adults Only')])
     imdb = EmbeddedField(IMDB, blank=True)
     comments = ArrayField(Comment, blank=True, default=[])
     dateAdded = DateTimeField(auto_now_add=True)

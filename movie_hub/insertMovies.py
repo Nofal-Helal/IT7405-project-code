@@ -12,6 +12,7 @@ m.duration = {'hours': 2, 'minutes': 7}
 m.directors = ['David Leitch']
 m.writers = ['Zak Olkewicz (screenplay by)', 'Kôtarô Isaka (based on the book by)']
 m.cast = ['Brad Pitt','Joey King','Aaron Taylor-Johnson']
+m.parentsGuide = 'R'
 m.posterImage = 'movie_hub/bullet_train.webp'
 m.summary = 'Five assassins aboard a swiftly-moving bullet train find out that their missions have something in common.'
 m.genres = ['action', 'comedy', 'thriller']
