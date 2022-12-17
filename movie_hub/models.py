@@ -5,12 +5,14 @@ from djongo.models import (
     DateTimeField,
     EmbeddedField,
     FloatField,
+    ForeignKey,
     IntegerField,
     JSONField,
     Model,
     ObjectIdField,
     TextField,
 )
+from django.contrib.auth.models import User
 
 
 # Create your models here.
@@ -24,7 +26,7 @@ class IMDB(Model):
 
 
 class Comment(Model):
-    user_id = ObjectIdField()
+    user_id = IntegerField()
     text = TextField()
     date = DateTimeField(auto_now_add=True)
 
