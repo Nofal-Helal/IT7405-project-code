@@ -50,6 +50,7 @@ class Movie(Model):
     cast = JSONField(default=[])
     posterImage = models.URLField(blank=True)
     summary = TextField(blank=True)
+    moreSummary = TextField(blank=True)
     genres = JSONField(default=[])
     parentsGuide = CharField(max_length=5,
                              choices=[('G', 'G - General Audience'),

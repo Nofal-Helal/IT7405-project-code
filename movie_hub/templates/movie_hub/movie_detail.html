@@ -1,0 +1,111 @@
+{% extends 'movie_hub/base.html' %}
+{% load static %}
+{% load num_k_m %}
+
+{% block title %}Movie Hub - {{movie.title}}{% endblock %}
+
+{% block content %}
+<div class="container" id="mainContent">
+    <div class="row">
+        <div class="col-lg-4 col-sm-12">
+            <img class="img-fluid w-100" src="{% static movie.posterImage %}" alt="{{movie.title}}">
+        </div>
+
+        <div class="col-lg-8 col-sm-12 my-3">
+            <h1 class="display-2 me-auto">
+                {{movie.title}}
+                <span class="fs-1">({{movie.year}})</span>
+            </h1>
+
+            <div class="hstack gap-2 mb-3">
+                <span>{{movie.parentsGuide}}&nbsp;Rated </span>
+                <span>&middot;</span>
+                <span>{{movie.duration.hours}}h {{movie.duration.minutes}}m</span>
+            </div>
+
+            <div class="hstack gap-2 mb-3">
+                {% for genre in movie.genres %}
+                <span class="badge rounded-pill text-bg-primary fs-6">{{genre}}</span>
+                {% endfor %}
+            </div>
+
+            <hr>
+
+            <h4>Summary</h4>
+            <p>{{movie.summary}}&emsp;
+                <a class="link-primary" data-bs-toggle="collapse" href="#moreSummary" role="button"
+                    aria-expanded="false" aria-controls="moreSummary">
+                    more
+                </a>
+            </p>
+            <div class="collapse" id="moreSummary">
+                <div class="card card-body">
+                    {{movie.moreSummary}}
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- <div class="vstack"> -->
+            <!--     <span><b>Writer{{movie.writers|length|pluralize}}</b>:&ensp;{{movie.writers|join:"&ensp;&middot;&ensp;"}}</span> -->
+            <!--     <span><b>Director{{movie.directors|length|pluralize}}</b>:&ensp;{{movie.directors|join:"&ensp;&middot;&ensp;"}}</span> -->
+            <!--     <span><b>Cast</b>:&ensp;{{movie.cast|join:"&ensp;&middot;&ensp;"}}</span> -->
+            <!-- </div> -->
+
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <b>Director{{movie.directors|length|pluralize}}</b>:&ensp;{{movie.directors|join:"&ensp;&middot;&ensp;"}}
+                </li>
+                <li class="list-group-item">
+                    <b>Writer{{movie.writers|length|pluralize}}</b>:&ensp;{{movie.writers|join:"&ensp;&middot;&ensp;"}}
+                </li>
+                <li class="list-group-item"><b>Cast</b>:&ensp;{{movie.cast|join:"&ensp;&middot;&ensp;"}}</li>
+            </ul>
+
+        </div>
+    </div>
+
+    <div class="row align-items-end mb-4">
+        <div class="col-lg-4 col-sm-12">
+            <h1 class="display-6">User Ratings</h1>
+        </div>
+        <div class="ms-auto col-lg-4 col-sm-12">
+            <div class="card">
+                <h5 class="card-header text-bg-warning">Ratings</h5>
+                <div class="hstack p-2 fs-5">
+                    <span class="flex-fill">IMDb Rating</span>
+                    <span class="flex-fill">{{movie.imdb.rating}}<span class="text-muted">/10</span></span>
+                    <span class="flex-fill">{{movie.imdb.votes|num_k_m}}&nbsp;<span
+                            class="text-muted">votes</span></span>
+                </div>
+                <div class="hstack p-2 fs-5">
+                    <span class="flex-fill">MH Rating</span>
+                    <span class="flex-fill">{{movie.imdb.rating}}<span class="text-muted">/10</span></span>
+                    <span class="flex-fill">{{movie.imdb.votes|num_k_m}}&nbsp;<span
+                            class="text-muted">votes</span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row row-cols-1 g-4 mb-5">
+        {% for comment in movie.comments %}
+        <div class="col">
+            <div class="col card">
+                <div class="card-header">
+                    <h5>{{comment.user_id}}</h5>
+                    <h5>{{comment.date|date}}</h5>
+                </div>
+                <div class="card-body">
+                    <h5>{{comment.text}}</h5>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<footer class="navbar container.fluid px-4 bg-light">
+    <a class="link-primary" href="#navbar">Go to the Top</a>
+</footer>
+{% endblock %}

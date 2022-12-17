@@ -63,7 +63,7 @@
                 <div class="card-body">
                     <h5 class="card-title">{{movie.title}}</h5>
                     <p class="card-text">{{movie.summary}}</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                    <a href="/movie/{{movie.pk}}/{{movie.title|slugify}}" class="btn btn-primary">Go somewhere</a>
                 </div>
             </div>
         </div>
