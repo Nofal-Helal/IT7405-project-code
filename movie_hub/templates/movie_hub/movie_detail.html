@@ -8,13 +8,14 @@
 <div class="container" id="mainContent">
     <div class="row">
         <div class="col-lg-4 col-sm-12">
-            <img class="img-fluid w-100" src="{% static movie.posterImage %}" alt="{{movie.title}}">
+            <img class="img-fluid w-100" src="{{movie.posterImage}}" alt="{{movie.title}}">
         </div>
 
         <div class="col-lg-8 col-sm-12 my-3">
             <h1 class="display-2 me-auto">
                 {{movie.title}}
                 <span class="fs-1">({{movie.year}})</span>
+                <span class="fs-1">({{movie.imdb.imdb_id}})</span>
             </h1>
 
             <div class="hstack gap-2 mb-3">

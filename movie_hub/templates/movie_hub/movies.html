@@ -34,9 +34,9 @@
             {% for movie in featured_movies %}
             <div class="carousel-item {% if forloop.first %}active{% endif %}" data-bs-interval="100000">
                 <div class="carousel-background d-block w-100"
-                    style="background-image:url('{% static movie.posterImage %}')">
+                    style="background-image:url('{{movie.posterImage}}')">
                 </div>
-                <img src="{% static movie.posterImage %}" alt="{{movie.title}}">
+                <img src="{{movie.posterImage}}" alt="{{movie.title}}">
             </div>
             {% endfor %}
         </div>
@@ -59,7 +59,7 @@
         {% for movie in movies %}
         <div class="col-lg-2 col-md-3">
             <div class="card">
-                <img src="{% static movie.posterImage %}" class="card-img-top" alt="{{movie.title}}">
+                <img src="{{movie.posterImage}}" class="card-img-top" alt="{{movie.title}}">
                 <div class="card-body">
                     <h5 class="card-title">{{movie.title}}</h5>
                     <p class="card-text">{{movie.summary}}</p>
