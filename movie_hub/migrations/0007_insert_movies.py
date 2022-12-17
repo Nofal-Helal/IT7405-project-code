@@ -19,7 +19,7 @@ def insertMovies(apps: Apps, _schema_editor):
 
 def deleteMovies(apps: Apps, _schema_editor):
     Movie = apps.get_model('movie_hub', 'Movie')
-    Movie.objects.delete()
+    Movie.objects.all().delete()
 
 class Migration(migrations.Migration):
 
