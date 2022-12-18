@@ -1,5 +1,6 @@
 {% extends 'movie_hub/base.html' %}
 {% load static %}
+{% load thumbnail %}
 
 {% block content %}
 <style>
@@ -36,7 +37,7 @@
                 <div class="carousel-background d-block w-100"
                     style="background-image:url('{{movie.posterImage}}')">
                 </div>
-                <img src="{{movie.posterImage}}" alt="{{movie.title}}">
+                <img src="{{movie.posterImage|thumbnail}}" alt="{{movie.title}}">
             </div>
             {% endfor %}
         </div>
@@ -59,7 +60,7 @@
         {% for movie in movies %}
         <div class="col-lg-2 col-md-3">
             <div class="card">
-                <img src="{{movie.posterImage}}" class="card-img-top" alt="{{movie.title}}">
+                <img src="{{movie.posterImage|thumbnail}}" class="card-img-top" alt="{{movie.title}}">
                 <div class="card-body">
                     <h5 class="card-title">{{movie.title}}</h5>
                     <p class="card-text">{{movie.summary}}</p>

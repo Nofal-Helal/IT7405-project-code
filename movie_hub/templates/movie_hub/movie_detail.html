@@ -1,6 +1,7 @@
 {% extends 'movie_hub/base.html' %}
 {% load static %}
 {% load num_k_m %}
+{% load thumbnail %}
 
 {% block title %}Movie Hub - {{movie.title}}{% endblock %}
 
@@ -8,7 +9,7 @@
 <div class="container" id="mainContent">
     <div class="row">
         <div class="col-lg-4 col-sm-12">
-            <img class="img-fluid w-100" src="{{movie.posterImage}}" alt="{{movie.title}}">
+            <img class="img-fluid w-100" src="{{movie.posterImage|thumbnail:'1080'}}" alt="{{movie.title}}">
         </div>
 
         <div class="col-lg-8 col-sm-12 my-3">
