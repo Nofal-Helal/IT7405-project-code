@@ -1,0 +1,47 @@
+{% extends 'movie_hub/base.html' %}
+
+{% block title %} Movie Hub - Sign Up {% endblock %}
+
+{% block content %}
+<div class="container">
+
+    {% comment %} Sign up form {% endcomment %}
+    <div class="modal position-static d-block m-auto">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div>
+                        <h1 class="modal-title display-6">Sign Up</h1>
+                        <p class="mb-0 text-muted">Create an account to use the full features of Movie Hub.</p>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <form method='post'>
+                        {% csrf_token %}
+                        <fieldset>
+
+                            {% for field in form %}
+                            <div class="form-floating mb-3">
+                                {{field}}
+                                <label for="{{field.id_for_label}}">{{field.label}}</label>
+                                <div class="invalid-feedback">
+                                    {{field.errors}}
+                                </div>
+                            </div>
+                            {% endfor %}
+
+                            <button class="btn btn-primary w-100 text-center" type="submit">Submit</button>
+
+                            <div class="form-text mt-3">
+                                Arleady have an account?
+                                <a class="link-primary" href="{% url 'login' %}">Log In</a>
+                            </div>
+
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

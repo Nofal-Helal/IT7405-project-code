@@ -6,29 +6,46 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <div class="navbar-nav me-auto mb-2 mb-lg-0">
-                <a class="nav-link active" aria-current="page" href="#">Movies</a>
+
+            <div class="navbar-nav">
+                <a class="nav-link" href="{% url 'home' %}">Movies</a>
                 <a class="nav-link" href="#">Link</a>
+            </div>
+
+            <form class="d-flex flex-fill mx-md-2 mx-lg-5" role="search">
+                <div class="input-group">
+                    <input class="form-control" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-dark" type="submit">Search</button>
+                </div>
+            </form>
+
+            {% if user.is_authenticated %}
+            <div class="navbar-nav">
                 <div class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">
-                        Dropdown
+                    <a class="nav-link dropdown-toggle hstack gap-2 align-items-center py-0" href="#" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <div>{{user.username}}</div>
+                        <div class="d-inline-flex text-bg-primary rounded align-items-center justify-content-center fs-4"
+                            style="width: 2.5rem; height: 2.5rem">
+                            {{user.username|first|upper}}
+                        </div>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                        <li><a class="dropdown-item" href="#">View Profile</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        <li><a class="dropdown-item" href="{% url 'logout' %}">Log Out</a></li>
                     </ul>
                 </div>
-                <a class="nav-link disabled me-auto">Disabled</a>
             </div>
-            <form class="d-flex" role="search">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-dark" type="submit">Search</button>
-            </form>
+            {% else %}
+            <div class="navbar-nav mb-2 mb-lg-0">
+                <a id="loginLink" class="nav-link" href="{% url 'login-with-redirect' request.path %}">Log In</a>
+                <a class="nav-link" href="{% url 'signup' %}">Sign Up</a>
+            </div>
+            {% endif %}
+
         </div>
     </div>
 </nav>
