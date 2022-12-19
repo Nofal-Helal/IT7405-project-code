@@ -19,20 +19,24 @@ ia = imdb.Cinemagoer()
 
 
 def find_mpaa_rating(certificates: [str]) -> str:
-    try:
-        matches = [
-            re.match(r'United States:(.+?):*', cert) for cert in certificates
-            if cert.startswith('United States')
-        ]
-        match = list(filter(None, matches))[0]
-        return match.group(1)
+    try:  # get feature film rating
+        return filter(
+            lambda c:
+            (c['country_code'] == 'US' and re.match('\(cert', c['note'])),
+            certificates).__next__()['certificate']
+    except Exception:
+        pass
+
+    try:  # if above fails, get tv rating
+        return filter(lambda c: c['country_code'] == 'US',
+                      certificates).__next__()['certificate']
     except Exception as e:
-        print("Couldn't get MPAA ")
         return ''
 
 
 def get_movie_Model(id) -> Movie:
-    im = ia.get_movie(id[2:], info=['main', 'plot', 'reviews'])
+    im = ia.get_movie(id[2:],
+                      info=['main', 'plot', 'parents guide', 'reviews'])
     m = Movie()
     m.title = im['title']
     m.year = im['year']
@@ -44,18 +48,26 @@ def get_movie_Model(id) -> Movie:
     m.parentsGuide = find_mpaa_rating(im['certificates'])
     m.posterImage = im['full-size cover url']
     m.summary = im['plot summary'][0]
-    m.moreSummary = im['plot summary'][1]
+    m.moreSummary = im['plot summary'][1] if len(
+        im['plot summary']) > 1 else ''
     m.genres = im['genres']
     m.imdb = {'imdb_id': id, 'rating': im['rating'], 'votes': im['votes']}
 
-    for user_id, review in zip([100, 101, 102], im['reviews'][:3]):
-        comment_date = timezone.datetime(2022, 12, random.randint(1, 31))
-        m.comments += [{
+    comments = []
+    for user_id, review in zip([100, 101, 102], im['reviews']):
+        comment_date = timezone.datetime(
+            2022,
+            12,
+            random.randint(1, 31),
+            tzinfo=timezone.get_current_timezone())
+        comments.append({
             'user_id': user_id,
             'text': review['content'],
             'rating': review['rating'],
             'date': comment_date
-        }]
+        })
+    assert len(comments) <= 3
+    m.comments = comments
 
     return m
 
@@ -76,33 +88,33 @@ movies = [
     'tt8760708', 'tt0027977', 'tt0086190', 'tt0053125', 'tt0169547',
     'tt21994906', 'tt15255876', 'tt5834426', 'tt15145764', 'tt11555492',
     'tt1375666', 'tt14444726', 'tt10187208', 'tt0103064', 'tt0119217',
-    'tt11138512', 'tt0082971', 'tt9114286', 'tt10954984', 'tt18925334',
-    'tt0799949', 'tt5311514', 'tt8110652', 'tt0167260', 'tt7144666',
-    'tt5108870', 'tt0110413', 'tt1016150', 'tt2582802', 'tt6791350',
-    'tt1213644', 'tt0086879', 'tt0468569', 'tt0405094', 'tt8267604',
-    'tt0120815', 'tt4513678', 'tt15791034', 'tt0209144', 'tt0062622',
-    'tt0060666', 'tt17220704', 'tt11291274', 'tt0068646', 'tt0060196',
-    'tt8041270', 'tt0910970', 'tt0114814', 'tt0043014', 'tt7286456',
-    'tt6718170', 'tt10168670', 'tt6856242', 'tt0045152', 'tt9660502',
-    'tt1596342', 'tt0361748', 'tt2380307', 'tt0056172', 'tt0111161',
-    'tt0057012', 'tt4154796', 'tt10343028', 'tt14439896', 'tt0102926',
-    'tt0167261', 'tt6751668', 'tt0032553', 'tt2106476', 'tt14807308',
-    'tt8745676', 'tt10752004', 'tt1160419', 'tt9198364', 'tt0816692',
-    'tt4009460', 'tt1675434', 'tt7775720', 'tt11992694', 'tt0112573',
-    'tt1630029', 'tt18550140', 'tt6334354', 'tt6467266', 'tt0081505',
-    'tt9419884', 'tt0022100', 'tt6710474', 'tt0080684', 'tt11245972',
-    'tt0064116', 'tt10731256', 'tt0245429', 'tt0071562', 'tt15229674',
-    'tt0364569', 'tt0253474', 'tt9288822', 'tt0109830', 'tt0108052',
-    'tt0317676', 'tt12477480', 'tt10872600', 'tt0076759', 'tt7657566',
-    'tt0095327', 'tt13007592', 'tt0180093', 'tt14138650', 'tt1345836',
-    'tt12003946', 'tt10640346', 'tt11286314', 'tt9639470', 'tt0137523',
-    'tt0482571', 'tt0119698', 'tt11116912', 'tt10304142', 'tt0078788',
-    'tt4998632', 'tt7322224', 'tt14209916', 'tt0095765', 'tt0099685',
-    'tt0317248', 'tt13320622', 'tt0038650', 'tt7693316', 'tt1877830',
-    'tt0047478', 'tt0110357', 'tt13320662', 'tt0105236', 'tt1187043',
-    'tt0804492', 'tt7375466', 'tt14208870', 'tt0082096', 'tt9032400',
-    'tt6264654', 'tt0133093', 'tt0047396', 'tt1488589', 'tt20917338',
-    'tt6443346', 'tt10999120', 'tt12593682', 'tt10298840'
+    'tt11138512', 'tt0082971', 'tt10954984', 'tt18925334', 'tt0799949',
+    'tt5311514', 'tt8110652', 'tt0167260', 'tt7144666', 'tt5108870',
+    'tt0110413', 'tt1016150', 'tt2582802', 'tt6791350', 'tt1213644',
+    'tt0086879', 'tt0468569', 'tt0405094', 'tt8267604', 'tt0120815',
+    'tt4513678', 'tt15791034', 'tt0209144', 'tt0062622', 'tt0060666',
+    'tt17220704', 'tt11291274', 'tt0068646', 'tt0060196', 'tt8041270',
+    'tt0910970', 'tt0114814', 'tt0043014', 'tt7286456', 'tt6718170',
+    'tt10168670', 'tt6856242', 'tt0045152', 'tt9660502', 'tt1596342',
+    'tt0361748', 'tt2380307', 'tt0056172', 'tt0111161', 'tt0057012',
+    'tt4154796', 'tt10343028', 'tt14439896', 'tt0102926', 'tt0167261',
+    'tt6751668', 'tt0032553', 'tt2106476', 'tt14807308', 'tt8745676',
+    'tt10752004', 'tt1160419', 'tt9198364', 'tt0816692', 'tt4009460',
+    'tt1675434', 'tt7775720', 'tt11992694', 'tt0112573', 'tt18550140',
+    'tt6334354', 'tt6467266', 'tt0081505', 'tt9419884', 'tt0022100',
+    'tt6710474', 'tt0080684', 'tt11245972', 'tt0064116', 'tt10731256',
+    'tt0245429', 'tt0071562', 'tt15229674', 'tt0364569', 'tt0253474',
+    'tt9288822', 'tt0109830', 'tt0108052', 'tt0317676', 'tt12477480',
+    'tt10872600', 'tt0076759', 'tt7657566', 'tt0095327', 'tt13007592',
+    'tt0180093', 'tt14138650', 'tt1345836', 'tt12003946', 'tt10640346',
+    'tt11286314', 'tt9639470', 'tt0137523', 'tt0482571', 'tt0119698',
+    'tt11116912', 'tt10304142', 'tt0078788', 'tt4998632', 'tt7322224',
+    'tt14209916', 'tt0095765', 'tt0099685', 'tt0317248', 'tt13320622',
+    'tt0038650', 'tt7693316', 'tt1877830', 'tt0047478', 'tt0110357',
+    'tt13320662', 'tt0105236', 'tt1187043', 'tt0804492', 'tt7375466',
+    'tt14208870', 'tt0082096', 'tt9032400', 'tt6264654', 'tt0133093',
+    'tt0047396', 'tt1488589', 'tt9114286', 'tt20917338', 'tt6443346',
+    'tt10999120', 'tt12593682', 'tt10298840', 'tt1630029'
 ]
 
 
@@ -114,11 +126,13 @@ def downloadAllSampleMovies():
         try:
             movie_object = get_movie_Model(movie)
             movie_objects.append(movie_object)
+            if movie_object.parentsGuide == '':
+                print('Couldn\'t get MPAA or TV rating for ', movie)
         except Exception as e:
-            print('----------------', movie)
+            print('----------------', movie, end=" --- ")
             __import__('pprint').pprint(e)
 
-    with open('movie_hub/movies.pickle', 'wb') as f:
+    with open('movie_hub/movies.pickle.zlib', 'wb') as f:
         movies_bytes = pickle.dumps(movie_objects)
         print('movie bytes ', len(movies_bytes))
         compressed_bytes = zlib.compress(movies_bytes, level=9)
