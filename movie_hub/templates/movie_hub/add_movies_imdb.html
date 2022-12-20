@@ -1,0 +1,82 @@
+{% extends 'movie_hub/base.html' %}
+
+{% block title %} Movie Hub - Add Movies {% endblock %}
+
+{% block content %}
+<div class="container">
+
+    {% if movies_added or movies_failed %}
+
+    <div class="alert alert-secondary show mx-auto mt-5" role="alert" style="width:500px">
+        <h5>Status</h5>
+        {{movies_added}} Movie{{movies_added|pluralize}} w{{movies_added|pluralize:'as,ere'}} added.
+    </div>
+
+    {% if movies_failed %}
+    <div class="alert alert-danger show mx-auto mt-5" role="alert" style="width:500px">
+        <h5>The following movies were not added:</h5>
+        <div class="list-group">
+            {% for movie in movies_failed %}
+            <div>{{movie}}</div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="text-center"><a href="{% url 'admin-add-movies' %}">Go back</a></div>
+
+    {% else %}
+    <div class="modal position-static d-block m-auto">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div>
+                        <h1 class="modal-title display-6">Add Movies</h1>
+                        <p class="mb-0 text-muted">Add movies by getting their information from IMDb</p>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <form method='post'>
+                        {% csrf_token %}
+                        <fieldset>
+
+                            {% for field in form %}
+                            <div class="form-floating mb-3">
+                                {{field}}
+                                <label for="{{field.id_for_label}}">{{field.label}}</label>
+                                <div class="invalid-feedback">
+                                    {{field.errors}}
+                                </div>
+                            </div>
+                            {% endfor %}
+
+                            <button id="submitButton" class="btn btn-primary w-100 text-center" type="submit"
+                                onclick="spin(this)">
+                                Submit
+                            </button>
+
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<script>
+    function auto_grow(element) {
+        element.style.height = "5px";
+        element.style.height = (element.scrollHeight) + "px";
+    }
+    auto_grow(document.getElementById('{{form.ids.auto_id}}'))
+
+    function spin(element) {
+        element.innerHTML =
+            '<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span> ' +
+            '<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span> ' +
+            '<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>'
+        element.disabled = true
+    }
+</script>
+{% endblock %}

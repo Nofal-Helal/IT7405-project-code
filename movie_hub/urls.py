@@ -17,4 +17,8 @@ urlpatterns = [
     path('sign-up/', views.user_signup, name='signup'),
 
     path('logout/', views.user_logout, name='logout'),
+
+    path('---admin-add-movies.62b0/',
+         views.admin_add_movies, 
+         name='admin-add-movies'),
 ]

@@ -1,10 +1,12 @@
 from django.contrib import auth
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.utils import DatabaseError
 from django.forms import Form
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from djongo.models.fields import ObjectId
 
+from .forms import AuthenticationForm, UserCreationForm, AddMovieFromIMDBForm
 from .models import Movie
 
 
@@ -23,7 +25,6 @@ def movie_detail(request: HttpRequest, id: str) -> HttpResponse:
 
 
 def user_login(request: HttpRequest, next_page='/') -> HttpResponse:
-    from .forms import AuthenticationForm
     from django.contrib.auth.views import LoginView
 
     # Use auth's LoginView with customized form
@@ -32,8 +33,6 @@ def user_login(request: HttpRequest, next_page='/') -> HttpResponse:
 
 
 def user_signup(request: HttpRequest) -> HttpResponse:
-    from .forms import UserCreationForm
-
     form: Form
 
     if request.method == 'POST':
@@ -64,3 +63,37 @@ def user_signup(request: HttpRequest) -> HttpResponse:
 def user_logout(request: HttpRequest) -> HttpResponse:
     auth.logout(request)
     return HttpResponseRedirect('/')
+
+
+@login_required
+@user_passes_test(lambda user: user.is_superuser)
+def admin_add_movies(request: HttpRequest) -> HttpResponse:
+    from .downloadMovieData import get_movie_Model
+
+    form: Form
+    if request.method == 'POST':
+        # process submitted form if valid
+        form = AddMovieFromIMDBForm(request.POST)
+        if form.is_valid():
+            movies_added = 0
+            movies_failed = []
+            for movie_id in form.cleaned_data['ids']:
+                try:
+                    movie = get_movie_Model(movie_id)
+                    movie.save()
+                    movies_added += 1
+                except Exception:
+                    movies_failed.append(movie_id)
+
+            context = {
+                'form': form,
+                'movies_added': movies_added,
+                'movies_failed': movies_failed
+            }
+            return render(request, 'movie_hub/add_movies_imdb.html', context)
+    else:
+        # create blank form
+        form = AddMovieFromIMDBForm()
+
+    context = {'form': form}
+    return render(request, 'movie_hub/add_movies_imdb.html', context)
