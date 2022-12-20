@@ -4,33 +4,31 @@ from django.contrib.auth.models import User
 import re
 
 
-# Extend the default AuthenticationForm from auth
-class AuthenticationForm(authforms.AuthenticationForm):
-    # Add attributes for bootstrap
+# Form with Bootstrap style inputs
+class BootstrapStyle(forms.Form):
+    # Add attributes
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for visible in self.visible_fields():
             visible.field.widget.attrs['class'] = 'form-control'
             visible.field.widget.attrs['placeholder'] = ''
 
-
-# Extend the default UserCreationForm from auth to include an email field
-class UserCreationForm(authforms.UserCreationForm):
-    email = forms.EmailField(max_length=254)
-    field_order = ['username', 'email', 'password1', 'password2']
-
-    # add .is-invalid class to invalid fields
+    # Add .is-invalid class to invalid fields
     def updateClasses(self):
         for visible in self.visible_fields():
             if visible.errors:
                 visible.field.widget.attrs['class'] = 'form-control is-invalid'
 
-    # Add attributes for bootstrap
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for visible in self.visible_fields():
-            visible.field.widget.attrs['class'] = 'form-control'
-            visible.field.widget.attrs['placeholder'] = ''
+
+# Style the default AuthenticationForm from auth
+class AuthenticationForm(authforms.AuthenticationForm, BootstrapStyle):
+    pass
+
+
+# Extend the default UserCreationForm from auth to include an email field
+class UserCreationForm(authforms.UserCreationForm, BootstrapStyle):
+    email = forms.EmailField(max_length=254)
+    field_order = ['username', 'email', 'password1', 'password2']
 
     # override the save method to also save email
     def save(self, commit=True):
@@ -41,7 +39,7 @@ class UserCreationForm(authforms.UserCreationForm):
         return user
 
 
-class AddMovieFromIMDBForm(forms.Form):
+class AddMovieFromIMDBForm(BootstrapStyle):
     ids = forms.CharField(
         label='List of IMDb ids, separated by lines',
         widget=forms.Textarea(
@@ -50,13 +48,6 @@ class AddMovieFromIMDBForm(forms.Form):
                 'style':
                 'resize:none;overflow:hidden;min-height:3.5rem;height:0;'
             }))
-
-    # Add attributes for bootstrap
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for visible in self.visible_fields():
-            visible.field.widget.attrs['class'] = 'form-control'
-            visible.field.widget.attrs['placeholder'] = ''
 
     def validate_imdb_ids(value: str):
         good = []
@@ -72,8 +63,6 @@ class AddMovieFromIMDBForm(forms.Form):
         ids = self.cleaned_data['ids']
         good, bad = AddMovieFromIMDBForm.validate_imdb_ids(ids)
         if bad:
-            self.fields['ids'].widget.attrs['class'] = (
-                'form-control is-invalid')
             raise forms.ValidationError(
                 'This should be a list of IMDb ids (e.g. tt1234567). These values are not valid: %(vals)s.',
                 params={'vals': ', '.join(bad)})

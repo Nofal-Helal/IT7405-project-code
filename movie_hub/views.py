@@ -91,6 +91,8 @@ def admin_add_movies(request: HttpRequest) -> HttpResponse:
                 'movies_failed': movies_failed
             }
             return render(request, 'movie_hub/add_movies_imdb.html', context)
+        else:
+            form.updateClasses()
     else:
         # create blank form
         form = AddMovieFromIMDBForm()
