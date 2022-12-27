@@ -1,0 +1,57 @@
+{% load static %}
+{% if user.is_authenticated %}
+<div class="modal fade" id="ratingModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="ratingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="ratingModalLabel">Rate This Movie</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="ratingForm" method="post" action="{% url 'movie_comment_form' movie.pk %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label pe-4" for="{{form.rating.id_for_label}}">{{form.rating.label}}</label>
+                        {{form.rating}}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="{{form.text.id_for_label}}">{{form.text.label}}</label>
+                        {{form.text}}
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" form="ratingForm" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'movie_hub/js/star-rating.min.js' %}"></script>
+<script>
+    const stars = new StarRating('.star-rating', {
+        maxStars: 10
+    });
+    document.querySelector('[data-star-rating]').classList.add('d-inline-flex', 'align-middle')
+</script>
+
+{% else %}
+<!-- Not logged in -->
+<div class="modal fade" id="ratingModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="ratingModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="ratingModalLabel">Rate This Movie</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                You need to be <a class="link-primary" href="{% url 'login-with-redirect' request.path %}">logged in</a>
+                in order to rate movies.
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}

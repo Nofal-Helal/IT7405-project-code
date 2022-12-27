@@ -5,6 +5,10 @@
 
 {% block title %}Movie Hub - {{movie.title}}{% endblock %}
 
+{% block header-includes %}
+<link rel="stylesheet" href="{% static 'movie_hub/css/star-rating.min.css' %}">
+{% endblock %}
+
 {% block content %}
 <div class="container" id="mainContent">
     <div class="row">
@@ -16,7 +20,7 @@
             <h1 class="display-2 me-auto">
                 {{movie.title}}
                 <span class="fs-1">({{movie.year}})</span>
-                <span class="fs-1">({{movie.imdb.imdb_id}})</span>
+                <!-- <span class="fs-1">({{movie.imdb.imdb_id}})</span> -->
             </h1>
 
             <div class="hstack gap-2 mb-3">
@@ -25,7 +29,7 @@
                 <span>{{movie.duration.hours}}h {{movie.duration.minutes}}m</span>
             </div>
 
-            <div class="hstack gap-2 mb-3">
+            <div class="hstack gap-2 mb-3 flex-wrap">
                 {% for genre in movie.genres %}
                 <span class="badge rounded-pill text-bg-primary fs-6">{{genre}}</span>
                 {% endfor %}
@@ -35,10 +39,12 @@
 
             <h4>Summary</h4>
             <p>{{movie.summary}}&emsp;
+                {% if movie.moreSummary %}
                 <a class="link-primary" data-bs-toggle="collapse" href="#moreSummary" role="button"
                     aria-expanded="false" aria-controls="moreSummary">
                     more
                 </a>
+                {% endif %}
             </p>
             <div class="collapse" id="moreSummary">
                 <div class="card card-body">
@@ -47,12 +53,6 @@
             </div>
 
             <hr>
-
-            <!-- <div class="vstack"> -->
-            <!--     <span><b>Writer{{movie.writers|length|pluralize}}</b>:&ensp;{{movie.writers|join:"&ensp;&middot;&ensp;"}}</span> -->
-            <!--     <span><b>Director{{movie.directors|length|pluralize}}</b>:&ensp;{{movie.directors|join:"&ensp;&middot;&ensp;"}}</span> -->
-            <!--     <span><b>Cast</b>:&ensp;{{movie.cast|join:"&ensp;&middot;&ensp;"}}</span> -->
-            <!-- </div> -->
 
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">
@@ -68,44 +68,63 @@
     </div>
 
     <div class="row align-items-end mb-4">
-        <div class="col-lg-4 col-sm-12">
-            <h1 class="display-6">User Ratings</h1>
+        <div class="col-lg-6 col-sm-12">
+            <div class="hstack">
+                <h1 class="display-6">User Ratings</h1>
+                <button class="btn btn-warning ms-3 px-3" data-bs-toggle="modal" data-bs-target="#ratingModal">Rate This
+                    Movie</button>
+            </div>
         </div>
-        <div class="ms-auto col-lg-4 col-sm-12">
+        <div class="ms-auto col-lg-4 col-sm-12" style="min-width:28rem">
             <div class="card">
-                <h5 class="card-header text-bg-warning">Ratings</h5>
-                <div class="hstack p-2 fs-5">
-                    <span class="flex-fill">IMDb Rating</span>
-                    <span class="flex-fill">{{movie.imdb.rating}}<span class="text-muted">/10</span></span>
-                    <span class="flex-fill">{{movie.imdb.votes|num_k_m}}&nbsp;<span
-                            class="text-muted">votes</span></span>
+                <h5 class="card-header text-bg-info">Ratings</h5>
+                <div class="hstack p-2 fs-5 gap-5">
+                    <span class="flex-grow-1">IMDb Rating</span>
+                    <span>{{movie.imdb.rating}}<span class="text-muted">/10</span></span>
+                    <span>{{movie.imdb.votes|num_k_m}}&nbsp;<span class="text-muted">votes</span></span>
                 </div>
-                <div class="hstack p-2 fs-5">
-                    <span class="flex-fill">MH Rating</span>
-                    <span class="flex-fill">{{movie.imdb.rating}}<span class="text-muted">/10</span></span>
-                    <span class="flex-fill">{{movie.imdb.votes|num_k_m}}&nbsp;<span
-                            class="text-muted">votes</span></span>
+                <div class="hstack p-2 fs-5 gap-5">
+                    <span class="flex-grow-1">MH Rating</span>
+                    <span>{{movie.imdb.rating}}<span class="text-muted">/10</span></span>
+                    <span>{{movie.imdb.votes|num_k_m}}&nbsp;<span class="text-muted">votes</span></span>
                 </div>
             </div>
         </div>
     </div>
+
+    <style>
+        .text-truncate-p:not(.show) {
+            -webkit-line-clamp: 3;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .text-truncate-p.collapsing {
+            height: 8ex;
+        }
+    </style>
 
     <div class="row row-cols-1 g-4 mb-5">
         {% for comment in movie.comments %}
         <div class="col">
             <div class="col card">
                 <div class="card-header">
-                    <h5>{{comment.user_id}}</h5>
-                    <h5>{{comment.date|date}}</h5>
+                    <h5>{{comment.user}}</h5>
+                    <h5>{{comment.date|date}} {{comment.rating}}</h5>
                 </div>
                 <div class="card-body">
-                    <h5>{{comment.text}}</h5>
+                    <p id="comment{{forloop.counter}}" class="text-truncate-p w-100" data-bs-toggle="collapse"
+                        href="#comment{{forloop.counter}}">{{comment.text}}</p>
                 </div>
             </div>
         </div>
         {% endfor %}
     </div>
 </div>
+
+{% include 'movie_hub/rate_movie_modal.html' %}
 
 <footer class="navbar container.fluid px-4 bg-light">
     <a class="link-primary" href="#navbar">Go to the Top</a>

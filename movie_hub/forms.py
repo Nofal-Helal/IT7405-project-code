@@ -11,7 +11,7 @@ class BootstrapStyle(forms.Form):
         super().__init__(*args, **kwargs)
         for visible in self.visible_fields():
             visible.field.widget.attrs['class'] = 'form-control'
-            visible.field.widget.attrs['placeholder'] = ''
+            visible.field.widget.attrs.setdefault('placeholder')
 
     # Add .is-invalid class to invalid fields
     def updateClasses(self):
@@ -67,3 +67,31 @@ class AddMovieFromIMDBForm(BootstrapStyle):
                 'This should be a list of IMDb ids (e.g. tt1234567). These values are not valid: %(vals)s.',
                 params={'vals': ', '.join(bad)})
         return good
+
+
+class CommentForm(BootstrapStyle):
+    rating = forms.IntegerField(min_value=1,
+                                max_value=10,
+                                label="Rating",
+                                widget=forms.Select(choices=[
+                                    (None, "Select Rating"),
+                                    (10, "Excellent"),
+                                    (9, "Excellent"),
+                                    (8, "VeryGood"),
+                                    (7, "VeryGood"),
+                                    (6, "Average"),
+                                    (5, "Average"),
+                                    (4, "Poor"),
+                                    (3, "Poor"),
+                                    (2, "Terrible"),
+                                    (1, "Terrible"),
+                                ]))
+    text = forms.CharField(
+        label='Comment',
+        widget=forms.Textarea(attrs={'placeholder': '(Optional)'}),
+        required=False)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['rating'].widget.attrs['class'] = 'star-rating'
+        self.fields['rating'].widget.attrs['required'] = ''

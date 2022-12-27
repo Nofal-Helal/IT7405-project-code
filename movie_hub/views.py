@@ -2,12 +2,13 @@ from django.contrib import auth
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.utils import DatabaseError
 from django.forms import Form
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render
+from django.utils import text, timezone
 from djongo.models.fields import ObjectId
 
-from .forms import AuthenticationForm, UserCreationForm, AddMovieFromIMDBForm
-from .models import Movie
+from .forms import AuthenticationForm, UserCreationForm, AddMovieFromIMDBForm, CommentForm
+from .models import Movie, Comment
 
 
 # Create your views here.
@@ -21,7 +22,34 @@ def homepage(request: HttpRequest) -> HttpResponse:
 
 def movie_detail(request: HttpRequest, id: str) -> HttpResponse:
     movie = Movie.objects.get(pk=ObjectId(id))
-    return render(request, 'movie_hub/movie_detail.html', {'movie': movie})
+    movie.comments = [{
+        **comment, 'user':
+        auth.models.User.objects.get(id=comment['user_id'])
+    } for comment in movie.comments]
+
+    comments_form = CommentForm()
+
+    context = {'movie': movie, 'form': comments_form}
+    return render(request, 'movie_hub/movie_detail.html', context)
+
+
+def movie_comment_form(request: HttpRequest, id: str) -> HttpResponse:
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = {}
+            comment['user_id'] = request.user.id
+            comment['rating'] = form.cleaned_data['rating']
+            comment['text'] = form.cleaned_data['text']
+            comment['date'] = timezone.now()
+            movie = Movie.objects.get(pk=ObjectId(id))
+            movie.comments.append(comment)
+            movie.save()
+            return HttpResponseRedirect(
+                f'/movie/{movie._id}/{text.slugify(movie.title)}')
+    else:
+        # this view only accepts POST
+        return HttpResponseNotFound()
 
 
 def user_login(request: HttpRequest, next_page='/') -> HttpResponse:

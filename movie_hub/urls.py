@@ -22,6 +22,10 @@ urlpatterns = [
 
     path('logout/', views.user_logout, name='logout'),
 
+    re_path(r'^comment/(?P<id>[0-9a-f]{24})/$',
+            views.movie_comment_form,
+            name="movie_comment_form"),
+
     path('---admin-add-movies.62b0/',
          views.admin_add_movies, 
          name='admin-add-movies'),

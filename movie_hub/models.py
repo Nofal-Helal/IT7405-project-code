@@ -27,8 +27,8 @@ class IMDB(Model):
 
 class Comment(Model):
     user_id = IntegerField()
-    text = TextField()
-    rating = FloatField()
+    text = TextField(blank=True)
+    rating = IntegerField()
     date = DateTimeField(auto_now_add=True)
 
     class Meta:
