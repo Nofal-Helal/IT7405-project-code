@@ -10,11 +10,15 @@ urlpatterns = [
 
     path('login/', views.user_login, name='login'),
 
-    path('login/?from=<path:next_page>',
+    path('login/?next=<path:next_page>',
          views.user_login,
          name='login-with-redirect'),
 
     path('sign-up/', views.user_signup, name='signup'),
+
+    path('sign-up/?next=<path:next_page>', 
+         views.user_signup, 
+         name='signup-with-redirect'),
 
     path('logout/', views.user_logout, name='logout'),
 

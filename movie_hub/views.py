@@ -29,10 +29,11 @@ def user_login(request: HttpRequest, next_page='/') -> HttpResponse:
 
     # Use auth's LoginView with customized form
     return (LoginView.as_view(next_page=next_page,
-                              authentication_form=AuthenticationForm)(request))
+                              authentication_form=AuthenticationForm,
+                              extra_context={'next_page': next_page})(request))
 
 
-def user_signup(request: HttpRequest) -> HttpResponse:
+def user_signup(request: HttpRequest, next_page='/') -> HttpResponse:
     form: Form
 
     if request.method == 'POST':
@@ -49,14 +50,14 @@ def user_signup(request: HttpRequest) -> HttpResponse:
         if form_is_valid:
             user = form.save()
             auth.login(request, user)
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect(next_page)
         else:
             form.updateClasses()
     else:
         # create blank form
         form = UserCreationForm()
 
-    context = {'form': form}
+    context = {'form': form, 'next_page': next_page}
     return render(request, 'registration/signup.html', context)
 
 

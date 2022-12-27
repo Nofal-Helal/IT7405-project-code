@@ -34,7 +34,7 @@
 
                             <div class="form-text mt-3">
                                 Arleady have an account?
-                                <a class="link-primary" href="{% url 'login' %}">Log In</a>
+                                <a class="link-primary" href="{% url 'login-with-redirect' next_page %}">Log In</a>
                             </div>
 
                         </fieldset>
@@ -44,4 +44,10 @@
         </div>
     </div>
 </div>
+
+<script>
+    // disable the signup link in the navbar
+    document.getElementById('signupLink').href = '#'
+    document.getElementById('loginLink').href = "{% url 'login-with-redirect' next_page %}"
+</script>
 {% endblock %}

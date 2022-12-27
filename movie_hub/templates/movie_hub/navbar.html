@@ -48,7 +48,7 @@
             {% else %}
             <div class="navbar-nav mb-2 mb-lg-0">
                 <a id="loginLink" class="nav-link" href="{% url 'login-with-redirect' request.path %}">Log In</a>
-                <a class="nav-link" href="{% url 'signup' %}">Sign Up</a>
+                <a id="signupLink" class="nav-link" href="{% url 'signup-with-redirect' request.path %}">Sign Up</a>
             </div>
             {% endif %}
 
