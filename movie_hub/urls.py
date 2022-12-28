@@ -26,6 +26,8 @@ urlpatterns = [
             views.movie_comment_form,
             name="movie_comment_form"),
 
+    path('movies/search/', views.movies_search, name="movies_search"),
+
     path('---admin-add-movies.62b0/',
          views.admin_add_movies, 
          name='admin-add-movies'),

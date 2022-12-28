@@ -67,3 +67,4 @@ class Movie(Model):
     comments = ArrayField(Comment, blank=True, default=[])
     dateAdded = DateTimeField(auto_now_add=True)
 
+    objects = models.DjongoManager()

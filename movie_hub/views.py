@@ -52,6 +52,13 @@ def movie_comment_form(request: HttpRequest, id: str) -> HttpResponse:
         return HttpResponseNotFound()
 
 
+def movies_search(request: HttpRequest) -> HttpResponse:
+    query = request.GET.get('q', default="")
+    movies = Movie.objects.mongo_find({'$text': {'$search': query}})
+    context = {'movies': movies, 'query': query}
+    return render(request, 'movie_hub/movies_search.html', context)
+
+
 def user_login(request: HttpRequest, next_page='/') -> HttpResponse:
     from django.contrib.auth.views import LoginView
 
