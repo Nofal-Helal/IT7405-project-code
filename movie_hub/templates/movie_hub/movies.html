@@ -12,11 +12,61 @@
         -webkit-filter: blur(8px);
     }
 
-    .carousel-item>img {
+    .carousel-item>.row {
         height: 100%;
         position: absolute;
         top: 0;
         left: 12%;
+        right: 12%;
+    }
+
+    .carousel-card {
+        margin: auto 0;
+        margin-left: -2rem;
+        max-height: 70%;
+        --bs-bg-opacity: 0.83;
+        box-shadow: white 0px 0px 2px;
+    }
+
+    .star-full {
+        background-image: url({% static 'movie_hub/img/star-full.svg' %});
+        width: 1rem;
+        height: 1rem;
+        display: inline-block;
+    }
+
+    @media (max-width: 992px) {
+        .carousel-background {
+            height: 70vh;
+        }
+
+        .carousel-item img {
+            margin-inline: auto;
+        }
+
+        .carousel-item>.row>div:nth-child(2) {
+            position: absolute;
+            bottom: 0;
+        }
+
+        .carousel-card {
+            margin-right: -2rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .carousel-item>.row {
+            left: 0;
+            right: 0;
+        }
+
+        .carousel-item>.row>div:nth-child(2) {
+            bottom: 19px;
+        }
+
+        .carousel-card {
+            margin-inline: 0;
+        }
     }
 </style>
 <div class="container">
@@ -35,9 +85,31 @@
             {% for movie in featured_movies %}
             <div class="carousel-item {% if forloop.first %}active{% endif %}" data-bs-interval="100000">
                 <div class="carousel-background d-block w-100"
-                    style="background-image:url('{{movie.posterImage}}')">
+                    style="background-image:url('{{movie.posterImage|thumbnail}}')">
                 </div>
-                <img src="{{movie.posterImage|thumbnail}}" alt="{{movie.title}}">
+                <div class="row">
+                    <div class="col-lg-6 col-md-12 d-flex">
+                        <img src="{{movie.posterImage|thumbnail}}" alt="{{movie.title}}" style="height:60vh">
+                    </div>
+                    <div class="col-lg-6 col-md-12 d-flex">
+                        <div class="card text-bg-dark carousel-card">
+                            <div class="card-header hstack align-items-baseline">
+                                <h5 class="card-title me-auto">{{movie.title}} ({{movie.year}})</h5>
+                                <div class="hstack gap-1"><span class="star-full"></span>{{movie.imdb.rating}}</div>
+                            </div>
+                            <div class="card-body">
+                                <div class="hstack gap-2 mb-2 flex-wrap">
+                                    {% for genre in movie.genres %}
+                                    <span class="badge rounded-pill text-bg-primary">{{genre}}</span>
+                                    {% endfor %}
+                                </div>
+                                <p class="card-text">{{movie.summary}}</p>
+                                <a href="/movie/{{movie.pk}}/{{movie.title|slugify}}" class="btn btn-primary">View
+                                    More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             {% endfor %}
         </div>

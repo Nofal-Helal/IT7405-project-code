@@ -14,7 +14,7 @@ from .models import Movie, Comment
 # Create your views here.
 def homepage(request: HttpRequest) -> HttpResponse:
     context = {
-        'featured_movies': Movie.objects.order_by('-dateAdded')[:5],
+        'featured_movies': Movie.objects.order_by('-dateAdded')[:8],
         'movies': Movie.objects.all()[:20]
     }
     return render(request, 'movie_hub/movies.html', context)
