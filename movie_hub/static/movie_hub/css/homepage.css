@@ -1,0 +1,64 @@
+.carousel-background {
+    height: 60vh;
+    background-size: cover;
+    background-position-y: -50%;
+    filter: blur(8px);
+    -webkit-filter: blur(8px);
+}
+
+.carousel-item>.row {
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 12%;
+    right: 12%;
+}
+
+.carousel-card {
+    margin: auto 0;
+    margin-left: -2rem;
+    max-height: 70%;
+    --bs-bg-opacity: 0.83;
+    box-shadow: white 0px 0px 2px;
+}
+
+.star-full {
+    background-image: url('../img/star-full.svg');
+    width: 1rem;
+    height: 1rem;
+    display: inline-block;
+}
+
+@media (max-width: 992px) {
+    .carousel-background {
+        height: 70vh;
+    }
+
+    .carousel-item img {
+        margin-inline: auto;
+    }
+
+    .carousel-item>.row>div:nth-child(2) {
+        position: absolute;
+        bottom: 0;
+    }
+
+    .carousel-card {
+        margin-right: -2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .carousel-item>.row {
+        left: 0;
+        right: 0;
+    }
+
+    .carousel-item>.row>div:nth-child(2) {
+        bottom: 19px;
+    }
+
+    .carousel-card {
+        margin-inline: 0;
+    }
+}
