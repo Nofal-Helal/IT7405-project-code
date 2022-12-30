@@ -48,7 +48,7 @@ def movie_comment_form(request: HttpRequest, id: str) -> HttpResponse:
             comment['text'] = form.cleaned_data['text']
             comment['date'] = timezone.now()
             movie = Movie.objects.get(pk=ObjectId(id))
-            movie.comments.append(comment)
+            movie.comments.insert(0, comment)
             movie.save()
             return HttpResponseRedirect(
                 f'/movie/{movie._id}/{text.slugify(movie.title)}')
