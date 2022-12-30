@@ -1,29 +1,29 @@
 {% extends 'movie_hub/base.html' %}
 {% load static %}
-{% load thumbnail %}
-{% load subscript %}
+
+{% block title %}Movie Hub - Search{% endblock %}
+
+{% block header-includes %}
+<link rel="stylesheet" href="{% static 'movie_hub/css/common.css' %}">
+{% endblock %}
 
 {% block content %}
 <div class="container">
     <!-- Movies -->
     <h1 class="display-6 my-4">Search results for '{{query|escape}}'</h1>
-    <div class="row gx-4">
+    <div class="row g-4 mb-5">
         {% for movie in movies %}
         <div class="col-lg-2 col-md-3">
-            <div class="card">
-                <img src="{{movie.posterImage|thumbnail}}" class="card-img-top" alt="{{movie.title}}">
-                <div class="card-body">
-                    <h5 class="card-title">{{movie.title}}</h5>
-                    <p class="card-text">{{movie.summary}}</p>
-                    <a href="/movie/{{movie|subscript:'_id'}}/{{movie.title|slugify}}" class="btn btn-primary">Go somewhere</a>
-                </div>
-            </div>
+            {% include 'movie_hub/movie_thumbnail.html' %}
         </div>
         {% endfor %}
     </div>
 </div>
+{% endblock %}
 
+{% block scripts %}
 <script>
     document.querySelector('[name="q"]').value = "{{query|escapejs}}"
 </script>
+<script src="{% static 'movie_hub/js/movie_popovers.js' %}"></script>
 {% endblock %}

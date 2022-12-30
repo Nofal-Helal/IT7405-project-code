@@ -1,0 +1,38 @@
+{% extends 'movie_hub/movies_paginated.html' %}
+{% load static %}
+
+{% block top-content %}
+<div class="card mt-3">
+    <div class="card-header">
+        <h5>Genres</h5>
+    </div>
+    <div class="card-body hstack flex-wrap gap-3">
+        <a id="Action" class="btn btn-outline-primary" href="/movies/genre/Action">Action</a>
+        <a id="Adventure" class="btn btn-outline-primary" href="/movies/genre/Adventure">Adventure</a>
+        <a id="Animation" class="btn btn-outline-primary" href="/movies/genre/Animation">Animation</a>
+        <a id="Comedy" class="btn btn-outline-primary" href="/movies/genre/Comedy">Comedy</a>
+        <a id="Crime" class="btn btn-outline-primary" href="/movies/genre/Crime">Crime</a>
+        <a id="Documentary" class="btn btn-outline-primary" href="/movies/genre/Documentary">Documentary</a>
+        <a id="Drama" class="btn btn-outline-primary" href="/movies/genre/Drama">Drama</a>
+        <a id="Family" class="btn btn-outline-primary" href="/movies/genre/Family">Family</a>
+        <a id="Fantasy" class="btn btn-outline-primary" href="/movies/genre/Fantasy">Fantasy</a>
+        <a id="History" class="btn btn-outline-primary" href="/movies/genre/History">History</a>
+        <a id="Horror" class="btn btn-outline-primary" href="/movies/genre/Horror">Horror</a>
+        <a id="Music" class="btn btn-outline-primary" href="/movies/genre/Music">Music</a>
+        <a id="Mystery" class="btn btn-outline-primary" href="/movies/genre/Mystery">Mystery</a>
+        <a id="Romance" class="btn btn-outline-primary" href="/movies/genre/Romance">Romance</a>
+        <a id="Sci-Fi" class="btn btn-outline-primary" href="/movies/genre/Sci-Fi">Sci-Fi</a>
+        <a id="Thriller" class="btn btn-outline-primary" href="/movies/genre/Thriller">Thriller</a>
+        <a id="War" class="btn btn-outline-primary" href="/movies/genre/War">War</a>
+        <a id="Western" class="btn btn-outline-primary" href="/movies/genre/Western">Western</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('{{genre}}').classList.replace('btn-outline-primary', 'btn-primary')
+    document.getElementById('{{genre}}').setAttribute('aria-current', 'page')
+</script>
+<script src="{% static 'movie_hub/js/movie_popovers.js' %}"></script>
+{% endblock %}

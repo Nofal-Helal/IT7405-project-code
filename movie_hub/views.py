@@ -6,6 +6,7 @@ from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, HttpRes
 from django.shortcuts import render
 from django.utils import text, timezone
 from djongo.models.fields import ObjectId
+from math import ceil
 
 from .forms import AuthenticationForm, UserCreationForm, AddMovieFromIMDBForm, CommentForm
 from .models import Movie, Comment
@@ -14,8 +15,12 @@ from .models import Movie, Comment
 # Create your views here.
 def homepage(request: HttpRequest) -> HttpResponse:
     context = {
-        'featured_movies': Movie.objects.order_by('-dateAdded')[:8],
-        'movies': Movie.objects.all()[:20]
+        'featured_movies':
+        Movie.objects.order_by('-dateAdded')[:8],
+        'latest_movies':
+        Movie.objects.order_by('-dateAdded')[:12],
+        'top_movies':
+        Movie.objects.mongo_find({}, sort=[('imdb.rating', -1)])[:12],
     }
     return render(request, 'movie_hub/movies.html', context)
 
@@ -57,6 +62,82 @@ def movies_search(request: HttpRequest) -> HttpResponse:
     movies = Movie.objects.mongo_find({'$text': {'$search': query}})
     context = {'movies': movies, 'query': query}
     return render(request, 'movie_hub/movies_search.html', context)
+
+
+movies_per_page = 18
+
+
+def pages(current: int, count: int = Movie.objects.count()) -> dict:
+    last_page = ceil(count / movies_per_page)
+    pages = {
+        'previous': current - 1 if current > 1 else 1,
+        'current': current,
+        'next': current + 1 if current < last_page else last_page,
+        'last_page': last_page,
+        'pages': range(1, last_page + 1)
+    }
+    return pages
+
+
+def movies_top(request: HttpRequest) -> HttpResponse:
+    page = request.GET.get('page', default=1)
+    try:
+        page = int(page)
+        if not page > 0: raise Exception()
+    except Exception:
+        page = 1
+
+    start = (page - 1) * movies_per_page
+    end = start + movies_per_page
+    movies = Movie.objects.mongo_find({},
+                                      sort=[('imdb.rating', -1)])[start:end]
+    context = {
+        'movies': movies,
+        'title': 'Top Rated Movies',
+        'page': page,
+        'pages': pages(page)
+    }
+    return render(request, 'movie_hub/movies_paginated.html', context)
+
+
+def movies_latest(request: HttpRequest) -> HttpResponse:
+    page = request.GET.get('page', default=1)
+    try:
+        page = int(page)
+        if not page > 0: raise Exception()
+    except Exception:
+        page = 1
+
+    start = (page - 1) * movies_per_page
+    end = start + movies_per_page
+    movies = Movie.objects.order_by('-dateAdded')[start:end]
+    context = {
+        'movies': movies,
+        'title': 'Latest Movies',
+        'pages': pages(page)
+    }
+    return render(request, 'movie_hub/movies_paginated.html', context)
+
+
+def movies_genres(request: HttpRequest, genre: str) -> HttpResponse:
+    page = request.GET.get('page', default=1)
+    try:
+        page = int(page)
+        if not page > 0: raise Exception()
+    except Exception:
+        page = 1
+
+    start = (page - 1) * movies_per_page
+    end = start + movies_per_page
+    num_movies = Movie.objects.mongo_count_documents({'genres': genre})
+    movies = Movie.objects.mongo_find({'genres': genre})[start:end]
+    context = {
+        'movies': movies,
+        'title': genre + ' Movies',
+        'genre': genre,
+        'pages': pages(page, num_movies)
+    }
+    return render(request, 'movie_hub/movies_genres.html', context)
 
 
 def user_login(request: HttpRequest, next_page='/') -> HttpResponse:

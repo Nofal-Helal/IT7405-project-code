@@ -1,0 +1,43 @@
+{% extends 'movie_hub/base.html' %}
+{% load static %}
+
+{% block title %}{{title}} - Page {{pages.current}}{% endblock %}
+
+{% block header-includes %}
+<link rel="stylesheet" href="{% static 'movie_hub/css/common.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% block top-content %}{% endblock %}
+    <!-- Movies -->
+    <h1 class="display-6 my-4">{{title}}</h1>
+    <div class="row g-4 mb-5">
+        {% for movie in movies %}
+        <div class="col-lg-2 col-md-3">
+            {% include 'movie_hub/movie_thumbnail.html' %}
+        </div>
+        {% endfor %}
+    </div>
+    <!-- Pagination bar -->
+    <nav class="mb-5" aria-label="{{title}} pages">
+        <ul class="pagination justify-content-center">
+            <li class="page-item"><a class="page-link {%if pages.current == 1%}disabled{%endif%}"
+                    href="?page={{pages.previous}}">Previous</a></li>
+            {% for p in pages.pages %}
+            {% if p == pages.current %}
+            <li class="page-item"><a class="page-link active" aria-current="page" href="?page={{p}}">{{p}}</a></li>
+            {% else %}
+            <li class="page-item"><a class="page-link" href="?page={{p}}">{{p}}</a></li>
+            {% endif %}
+            {% endfor %}
+            <li class="page-item"><a class="page-link {%if pages.current == pages.last_page%}disabled{%endif%}"
+                    href="?page={{pages.next}}">Next</a></li>
+        </ul>
+    </nav>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'movie_hub/js/movie_popovers.js' %}"></script>
+{% endblock %}

@@ -28,6 +28,16 @@ urlpatterns = [
 
     path('movies/search/', views.movies_search, name="movies_search"),
 
+    path('movies/top/', views.movies_top, name="movies_top"),
+
+    re_path(r'^movies/(?:latest/){0,1}$', views.movies_latest, name="movies_latest"),
+
+    re_path((r'^movies/genre/(?P<genre>Action|Adventure|Animation|Comedy|'
+             r'Crime|Documentary|Drama|Family|Fantasy|History|Horror|Music|'
+             r'Mystery|Romance|Sci-Fi|Thriller|War|Western)/$'),
+            views.movies_genres,
+            name="movies_genres"),
+
     path('---admin-add-movies.62b0/',
          views.admin_add_movies, 
          name='admin-add-movies'),

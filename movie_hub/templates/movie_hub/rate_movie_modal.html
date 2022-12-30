@@ -29,6 +29,7 @@
     </div>
 </div>
 
+{% block scripts %}
 <script src="{% static 'movie_hub/js/star-rating.min.js' %}"></script>
 <script>
     const stars = new StarRating('.star-rating', {
@@ -36,6 +37,7 @@
     });
     document.querySelector('[data-star-rating]').classList.add('d-inline-flex', 'align-middle')
 </script>
+{% endblock %}
 
 {% else %}
 <!-- Not logged in -->

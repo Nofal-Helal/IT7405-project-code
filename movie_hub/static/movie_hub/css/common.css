@@ -1,0 +1,17 @@
+.star-full {
+    background-image: url('../img/star-full.svg');
+    width: 1rem;
+    height: 1rem;
+    display: inline-block;
+}
+
+.card-img {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position-x: 50%;
+    --bs-aspect-ratio: calc(620 / 418 * 100%);
+}
+
+.custom-popover {
+    --bs-popover-max-width: 350px;
+}

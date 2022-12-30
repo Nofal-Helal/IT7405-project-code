@@ -2,8 +2,12 @@
 {% load static %}
 {% load thumbnail %}
 
-{% block content %}
+{% block header-includes %}
+<link rel="stylesheet" href="{% static 'movie_hub/css/common.css' %}">
 <link rel="stylesheet" href="{% static 'movie_hub/css/homepage.css' %}">
+{% endblock %}
+
+{% block content %}
 <div class="container">
     <!-- Featured Movies Carousel -->
     <div id="moviesCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
@@ -63,19 +67,32 @@
     </div>
 
     <!-- Movies -->
-    <div class="row gx-4">
-        {% for movie in movies %}
+    <div class="hstack">
+        <h1 class="fw-light me-auto">Latest Movies</h1>
+        <a href="{% url 'movies_latest' %}" class="link-primary text-decoration-none">View All ></a>
+    </div>
+    <div class="row g-4 mb-5">
+        {% for movie in latest_movies %}
         <div class="col-lg-2 col-md-3">
-            <div class="card">
-                <img src="{{movie.posterImage|thumbnail}}" class="card-img-top" alt="{{movie.title}}">
-                <div class="card-body">
-                    <h5 class="card-title">{{movie.title}}</h5>
-                    <p class="card-text">{{movie.summary}}</p>
-                    <a href="/movie/{{movie.pk}}/{{movie.title|slugify}}" class="btn btn-primary">Go somewhere</a>
-                </div>
-            </div>
+            {% include 'movie_hub/movie_thumbnail.html' %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="hstack">
+        <h1 class="fw-light me-auto">Top Rated</h1>
+        <a href="{% url 'movies_top' %}" class="link-primary text-decoration-none">View All ></a>
+    </div>
+    <div class="row g-4 pb-5 mb-5">
+        {% for movie in top_movies %}
+        <div class="col-lg-2 col-md-3">
+            {% include 'movie_hub/movie_thumbnail.html' %}
         </div>
         {% endfor %}
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'movie_hub/js/movie_popovers.js' %}"></script>
 {% endblock %}

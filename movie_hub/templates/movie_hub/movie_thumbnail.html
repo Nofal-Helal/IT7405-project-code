@@ -1,0 +1,23 @@
+{% load thumbnail %}
+{% load subscript %}
+
+<div class="card position-relative" data-bs-toggle="popover" data-bs-content-id="pop{{movie|subscript:'_id'}}"
+    data-bs-placement="right" data-bs-trigger="hover">
+    <div class="card-img ratio" style="background-image:url({{movie.posterImage|thumbnail}})" role="img"
+        aria-label="{{movie.title}} cover"></div>
+    <div class="card-img-overlay">
+        <div id="pop{{movie|subscript:'_id'}}" class="d-none"
+            data-bs-title="<div class='hstack align-items-baseline'><h5 class='me-auto mb-0'>{{movie.title}} ({{movie.year}})</h5><div class='hstack gap-1'><span class='star-full'></span>{{movie.imdb.rating}}</div></div>">
+            <div class="hstack gap-2 mb-2 flex-wrap">
+                {% for genre in movie.genres %}
+                <span class="badge rounded-pill text-bg-primary">{{genre}}</span>
+                {% endfor %}
+            </div>
+            <p class="card-text">{{movie.summary}}</p>
+        </div>
+        <a href="/movie/{{movie|subscript:'_id'}}/{{movie.title|slugify}}"
+            class="d-inline-block w-100 text-reset text-uppercase text-truncate text-decoration-none stretched-link align-middle"
+            aria-label="{{movie.title}}">
+        </a>
+    </div>
+</div>
