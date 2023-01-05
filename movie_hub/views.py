@@ -33,8 +33,15 @@ def movie_detail(request: HttpRequest, id: str) -> HttpResponse:
     } for comment in movie.comments]
 
     comments_form = CommentForm()
+    num_comments = len(movie.comments)
+    avg = sum(map(lambda c: c['rating'], movie.comments)) / num_comments
 
-    context = {'movie': movie, 'form': comments_form}
+    context = {
+        'movie': movie,
+        'form': comments_form,
+        'avg': avg,
+        'num_comments': num_comments
+    }
     return render(request, 'movie_hub/movie_detail.html', context)
 
 

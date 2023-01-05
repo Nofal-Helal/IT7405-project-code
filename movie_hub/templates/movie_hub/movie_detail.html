@@ -85,8 +85,8 @@
                 </div>
                 <div class="hstack p-2 fs-5 gap-5">
                     <span class="flex-grow-1">MH Rating</span>
-                    <span>{{movie.imdb.rating}}<span class="text-muted">/10</span></span>
-                    <span>{{movie.imdb.votes|num_k_m}}&nbsp;<span class="text-muted">votes</span></span>
+                    <span>{{avg}}<span class="text-muted">/10</span></span>
+                    <span>{{num_comments|num_k_m}}&nbsp;<span class="text-muted">votes</span></span>
                 </div>
             </div>
         </div>
@@ -111,8 +111,11 @@
         <div class="col">
             <div class="col card">
                 <div class="card-header">
-                    <h5>{{comment.user}}</h5>
-                    <h5>{{comment.date|date}} {{comment.rating}}</h5>
+                    <div class='hstack align-items-baseline'>
+                        <h5 class='me-auto mb-0'>{{comment.user}} <small>commented on {{comment.date|date}}</small></h5>
+                        <div class='hstack gap-1'>
+                            <img src="{% static 'movie_hub/img/star-full.svg' %}"> {{comment.rating}}</div>
+                    </div>
                 </div>
                 <div class="card-body">
                     <p id="comment{{forloop.counter}}" class="text-truncate-p w-100" data-bs-toggle="collapse"
